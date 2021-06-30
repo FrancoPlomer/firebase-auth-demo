@@ -113,26 +113,33 @@ const setUpPosts = data => {
     {
         //En el caso que tenga datos los incluimos en nuestro DOM
         let html = '';
-        data.forEach(doc => {
-            const post = doc.data()
-            const li = `
-            <li class="list-group-item list-group-item-action">
-                <h5>${post.tittle}</h5>
-                <p>${post.description}</p>
-                <div>
-                    <button class="btn btn-danger">Delete</button>
-                    <button class="btn btn-primary">Edit</button>.
-                </div>
-            </li>`;
-            html += li;
+        //LO siguiente es para que, cada vez que se actualice una nueva tarea, esta lo refresque sobre la pagina 
+        setUpPostGet((data) => 
+        {
+            data.forEach(doc => {
+                const post = doc.data()
+                const li = `
+                <li class="list-group-item list-group-item-action">
+                    <h5>${post.tittle}</h5>
+                    <p>${post.description}</p>
+                    <div>
+                        <button class="btn btn-danger">Delete</button>
+                        <button class="btn btn-primary">Edit</button>.
+                    </div>
+                </li>`;
+                html += li;
+            })
+            postList.innerHTML = html;
         })
-        postList.innerHTML = html;
+
     }
     else
     {
         postList.innerHTML=`<p class="text-center">login to see posts</p>`
     }
 }
+//LO siguiente es para que, cada vez que se actualice una nueva tarea, esta lo refresque sobre la pagina 
+const setUpPostGet = (callback) => fs.collection('posts').onSnapshot(callback)
 //Events
 //List for auth state changes
 //El siguiente evento hace que el mismo se dispare si hay un cambio en el estado del usuario(logueado, registrado o deslogueado)
@@ -178,8 +185,6 @@ taskForm.addEventListener("submit", async (e) =>
     const description = taskForm['task-description'];
 
     await saveTask(tittle.value, description.value);
-
-    setUpPosts();
     taskForm.reset();
     tittle.focus();
 })
