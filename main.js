@@ -112,10 +112,11 @@ const setUpPosts = data => {
     if(data.length)
     {
         //En el caso que tenga datos los incluimos en nuestro DOM
-        let html = '';
+        
         //LO siguiente es para que, cada vez que se actualice una nueva tarea, esta lo refresque sobre la pagina 
         setUpPostGet((data) => 
         {
+            let html = '';
             data.forEach(doc => {
                 const post = doc.data()
                 const li = `
