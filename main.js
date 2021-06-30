@@ -66,6 +66,26 @@ googleLogin.addEventListener("click", e =>
             })
 })
 
+//FACEBOOK LOGIN
+
+const facebookLogin = document.querySelector("#facebookLogin")
+facebookLogin.addEventListener("click", e => 
+{
+    e.preventDefault();
+    const provider = new firebase.auth.FacebookAuthProvider();
+    auth 
+    .signInWithPopup(provider)
+    .then(result =>
+        {
+            console.log("facebook sign in")
+        })
+    .catch(err => 
+        {
+            console.log(err)
+        })
+})  
+
+
 //posts
 
 const postList = document.querySelector(".posts");
