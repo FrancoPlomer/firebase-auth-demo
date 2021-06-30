@@ -151,3 +151,30 @@ auth.onAuthStateChanged(user =>
             loginCheck(user); 
         }
     })
+//CRUD ZONE --->
+
+const taskForm = document.querySelector("#task-form")
+
+//CREATE NEW TASK
+const saveTask = (tittle,description) => 
+{
+    const response =  fs.collection("posts").doc().set(
+        {
+            tittle,
+            description
+        }
+    )
+}
+taskForm.addEventListener("submit", async (e) => 
+{
+    e.preventDefault();
+    console.log("enviando")
+
+    const tittle = taskForm['task-tittle'];
+    const description = taskForm['task-description'];
+
+    await saveTask(tittle.value, description.value);
+    taskForm.reset();
+    tittle.focus();
+})
+//END CREATE NEW TASK
