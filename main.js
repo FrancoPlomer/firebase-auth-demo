@@ -119,6 +119,10 @@ const setUpPosts = data => {
             <li class="list-group-item list-group-item-action">
                 <h5>${post.tittle}</h5>
                 <p>${post.description}</p>
+                <div>
+                    <button class="btn btn-danger">Delete</button>
+                    <button class="btn btn-primary">Edit</button>.
+                </div>
             </li>"`;
             html += li;
         })
