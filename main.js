@@ -178,6 +178,8 @@ taskForm.addEventListener("submit", async (e) =>
     const description = taskForm['task-description'];
 
     await saveTask(tittle.value, description.value);
+
+    setUpPosts();
     taskForm.reset();
     tittle.focus();
 })
