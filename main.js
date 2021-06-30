@@ -107,6 +107,12 @@ facebookLogin.addEventListener("click", e =>
 //posts
 
 const postList = document.querySelector(".posts");
+//LO siguiente es para que, cada vez que se actualice una nueva tarea, esta lo refresque sobre la pagina 
+const setUpPostGet = (callback) => fs.collection('posts').onSnapshot(callback)
+
+//El siguiente metodo es para borrar un post por su id.
+const DeletePost = id  => fs.collection('posts').doc(id).delete();
+
 //A traves de la siguiente variable verificamos si la coleccion tiene datos
 const setUpPosts = data => {
     if(data.length)
@@ -119,18 +125,29 @@ const setUpPosts = data => {
             let html = '';
             data.forEach(doc => {
                 const post = doc.data()
+                post.id =doc.id;
                 const li = `
                 <li class="list-group-item list-group-item-action">
                     <h5>${post.tittle}</h5>
                     <p>${post.description}</p>
                     <div>
-                        <button class="btn btn-danger">Delete</button>
-                        <button class="btn btn-primary">Edit</button>.
+                        <button class="btn btn-danger btn-delete" data-id="${post.id}">Delete</button>
+                        <button class="btn btn-primary btn-edit">Edit</button>.
                     </div>
                 </li>`;
                 html += li;
+                //Function delete
+                const btnDelete = document.querySelectorAll(".btn-delete");
+                btnDelete.forEach(btn => 
+                    {
+                        btn.addEventListener('click', async (e) => 
+                        {
+                            await DeletePost(e.target.dataset.id);
+                        })
+                    })
             })
             postList.innerHTML = html;
+            
         })
 
     }
@@ -139,8 +156,7 @@ const setUpPosts = data => {
         postList.innerHTML=`<p class="text-center">login to see posts</p>`
     }
 }
-//LO siguiente es para que, cada vez que se actualice una nueva tarea, esta lo refresque sobre la pagina 
-const setUpPostGet = (callback) => fs.collection('posts').onSnapshot(callback)
+
 //Events
 //List for auth state changes
 //El siguiente evento hace que el mismo se dispare si hay un cambio en el estado del usuario(logueado, registrado o deslogueado)
