@@ -1,4 +1,22 @@
+
+const loggedOut = document.querySelectorAll('.logged-out')
+const loggedin = document.querySelectorAll('.logged-in')
+const loginCheck = user => 
+{
+    if (user)
+    {
+        loggedin.forEach(link => link.style.display='block');
+        loggedOut.forEach(link => link.style.display='none');
+    } else {
+        loggedOut.forEach(link => link.style.display='block');
+        loggedin.forEach(link => link.style.display='none');
+    } 
+}
+
+
+
 const signUpForm = document.querySelector("#signup-form");
+
 
 
 signUpForm.addEventListener('submit', (e) => {
@@ -126,8 +144,10 @@ auth.onAuthStateChanged(user =>
                 //Mostrame los datos actuales de esa colecion actuales
                 .then((snapshot) => {
                     setUpPosts(snapshot.docs)
+                    loginCheck(user);
                 })
         } else{
             setUpPosts([])
+            loginCheck(user); 
         }
     })
