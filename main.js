@@ -123,7 +123,7 @@ const setUpPosts = data => {
                     <button class="btn btn-danger">Delete</button>
                     <button class="btn btn-primary">Edit</button>.
                 </div>
-            </li>"`;
+            </li>`;
             html += li;
         })
         postList.innerHTML = html;
