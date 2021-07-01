@@ -1,15 +1,20 @@
 
 const loggedOut = document.querySelectorAll('.logged-out')
 const loggedin = document.querySelectorAll('.logged-in')
+const taskForm = document.querySelector("#task-form")
+let editStatus = false;
+let id = '';
 const loginCheck = user => 
 {
     if (user)
     {
         loggedin.forEach(link => link.style.display='block');
         loggedOut.forEach(link => link.style.display='none');
+        taskForm.forEach(link => link.style.display='none');
     } else {
         loggedOut.forEach(link => link.style.display='block');
         loggedin.forEach(link => link.style.display='none');
+        taskForm.forEach(link => link.style.display='block');
     } 
 }
 
@@ -113,6 +118,12 @@ const setUpPostGet = (callback) => fs.collection('posts').onSnapshot(callback)
 //El siguiente metodo es para borrar un post por su id.
 const DeletePost = id  => fs.collection('posts').doc(id).delete();
 
+//El siguiente metodo es para traer un elemento por su id el cual se usara para el editar
+const getPost = (id) => fs.collection('posts').doc(id).get();
+
+//El siguiente metodo es para editar un campo
+const updatePost = (id, updatedPost) => fs.collection('posts').doc(id).update(updatedPost);
+
 //A traves de la siguiente variable verificamos si la coleccion tiene datos
 const setUpPosts = data => {
     if(data.length)
@@ -132,22 +143,39 @@ const setUpPosts = data => {
                     <p>${post.description}</p>
                     <div>
                         <button class="btn btn-danger btn-delete" data-id="${post.id}">Delete</button>
-                        <button class="btn btn-primary btn-edit">Edit</button>.
+                        <button class="btn btn-primary btn-edit" data-id="${post.id}">Edit</button>
                     </div>
                 </li>`;
                 html += li;
-                //Function delete
-                const btnDelete = document.querySelectorAll(".btn-delete");
-                btnDelete.forEach(btn => 
-                    {
-                        btn.addEventListener('click', async (e) => 
-                        {
-                            await DeletePost(e.target.dataset.id);
-                        })
-                    })
+                
+                
             })
             postList.innerHTML = html;
+            //Function delete
+            const btnsDelete = document.querySelectorAll('.btn-delete');
+            btnsDelete.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    await DeletePost(e.target.dataset.id)
+                })
+            })
+            //function edit
+            const btnsEdit = document.querySelectorAll('.btn-edit');
+            btnsEdit.forEach(btn =>{
+                btn.addEventListener('click', async (e) => 
+                {
+                    const doc = await getPost(e.target.dataset.id);
+                    const task = doc.data();
+                    id = doc.id;
+                    editStatus = true;
+                    
+                    taskForm['task-tittle'].value = task.tittle;
+                    taskForm['task-description'].value = task.description;
+                    taskForm['btn-task-form'].innerText = 'Update';
+                    
+
+                })
             
+            })
         })
 
     }
@@ -181,7 +209,7 @@ auth.onAuthStateChanged(user =>
     })
 //CRUD ZONE --->
 
-const taskForm = document.querySelector("#task-form")
+
 
 //CREATE NEW TASK
 const saveTask = (tittle,description) => 
@@ -196,12 +224,21 @@ const saveTask = (tittle,description) =>
 taskForm.addEventListener("submit", async (e) => 
 {
     e.preventDefault();
-    console.log("enviando")
 
     const tittle = taskForm['task-tittle'];
     const description = taskForm['task-description'];
 
-    await saveTask(tittle.value, description.value);
+    if (!editStatus)
+    {
+        await saveTask(tittle.value, description.value);
+    }else{  
+        await updatePost(id, {
+            tittle: tittle.value,
+            description: description.value
+        })
+        editStatus = false;
+        taskForm['btn-task-form'].innerText = 'save';
+    }
     taskForm.reset();
     tittle.focus();
 })
