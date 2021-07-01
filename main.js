@@ -2,6 +2,7 @@
 const loggedOut = document.querySelectorAll('.logged-out')
 const loggedin = document.querySelectorAll('.logged-in')
 const taskForm = document.querySelector("#task-form")
+const containerCrud = document.querySelector('.containerCrud')
 let editStatus = false;
 let id = '';
 const loginCheck = user => 
@@ -10,11 +11,11 @@ const loginCheck = user =>
     {
         loggedin.forEach(link => link.style.display='block');
         loggedOut.forEach(link => link.style.display='none');
-        taskForm.forEach(link => link.style.display='none');
+        containerCrud.style.display='block';
     } else {
         loggedOut.forEach(link => link.style.display='block');
         loggedin.forEach(link => link.style.display='none');
-        taskForm.forEach(link => link.style.display='block');
+        containerCrud.style.display='none';
     } 
 }
 
